@@ -1,0 +1,26 @@
+.gradient-border {
+    border: 2px solid transparent;
+    background-image: linear-gradient(white, white), linear-gradient(to right, #4facfe, #00f2fe);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    border-radius: 0.375rem; 
+  }
+  
+
+.text-outline-white {
+  -webkit-text-stroke: 1px white;
+  text-stroke: 1px white; 
+}
+
+.custom-bg-image {
+  background-image: url('E:\Summer\pmt\src\assets\unsplash (1).jpg'); /* Adjust the path as needed */
+  background-size: cover;
+  background-position: center;
+}
+
+.fixed-sidebar {
+  position: fixed;
+  top: 20%; /* Adjust this percentage as needed */
+  width: 220px; /* Adjust the width as needed */
+}
+
