@@ -5,23 +5,37 @@ global.TextDecoder = TextDecoder;
 import { MemoryRouter } from "react-router-dom"; 
 import userEvent from '@testing-library/user-event'; // Import userEvent
 import Todo from '../src/components/dashboard/todo';
-import exp from 'constants';
+import { wait } from '@testing-library/user-event/dist/cjs/utils/index.js';
 require("@testing-library/jest-dom"); 
- jest.mock("chart.js", () => ({
-  ...jest.requireActual("chart.js"), 
-  register: jest.fn(), 
-}));
 const { render, screen, waitFor, fireEvent, within } = require("@testing-library/react");
 const Dashboard = require("../src/components/db").default;
+const Db = require("../src/components/dashboard/dashboard").default;
 const Navbar = require ("../src/components/dashboard/dashboard_navbar").default;
 const Topnavbar = require("../src/components/navbar").default;
 const Todos = require("../src/components/dashboard/todo").default;
 const Review = require ("../src/components/dashboard/review").default;
+const Chart = require ("../src/components/dashboard/chart").default;
+const Kanban = require ("../src/components/dashboard/board").default;
+const addmodel = require("../src/components/dashboard/ts_AddModal").default;
+const Visualizer = require ("../src/components/dashboard/visualize").default;
+
+
 const axios = require("axios");
-const { NotificationProvider } = require("../src/components/dashboard/notificationcontext");
+const { NotificationProvider} = require("../src/components/dashboard/notificationcontext");
+const { UserProvider, useUserContext } = require("../src/components/dashboard/usercontext");
 
 
 jest.mock("axios"); // Mocking axios to prevent real API calls
+
+jest.mock("chart.js", () => ({
+  ...jest.requireActual("chart.js"), 
+  register: jest.fn(), 
+}));
+
+jest.mock('axios');
+jest.mock('react-chartjs-2', () => ({
+  Bar: () => <div>Mocked Bar Chart</div>, // Mocked Bar component
+}));
 
 beforeEach(() => {
 
@@ -47,6 +61,8 @@ async function renderer(MemoryRouter,NotificationProvider,Component){
     </MemoryRouter>
   )
 }
+
+
 
 async function VisibilityCheck(testid){
   const Component = await screen.getByTestId(testid);
@@ -111,7 +127,56 @@ async function TableSelector(combox_num, combox_text){
   waitFor(()=>expect(dropdown).toHaveValue(combox_text));
 }
 
-test.skip("Dashboard should show correct info attributes", async () => {
+
+async function addtask_kanbanboard(columnnum, title, desc, priority, deadline, tag, img=null) {
+
+  const columnaddbtn = screen.getAllByText('Add Task')[columnnum]
+  await userEvent.click(columnaddbtn);
+
+  const titleinput = await screen.findByPlaceholderText('Title');
+  fireEvent.change(titleinput, {target : {value : title}})
+
+  const descinput = await screen.findByPlaceholderText('Description');
+  fireEvent.change(descinput, {target : {value : desc}})
+
+  const prioritycombox = await screen.findByRole('combobox');
+  const priorityoption = await screen.findByRole('option', {name : priority});
+  userEvent.selectOptions(prioritycombox, priorityoption)
+
+  const time = await screen.findByDisplayValue('0')
+  fireEvent.change(time, {target : {value : deadline}});
+
+  const taginput = await screen.findByPlaceholderText('Tag Title');
+  fireEvent.change(taginput, {target : {value : tag}})
+  const addtagbtn = await screen.findByText('Add Tag')
+  userEvent.click(addtagbtn);
+
+  if(img){
+    //handle img input
+    const filebtn = await screen.findByText('Choose File')
+    const file = new File([img], 'test-file.png', {type : 'img/png'})
+    fireEvent.change(filebtn, {target : {files : [file]}})
+    await waitFor(()=>expect(filebtn.files[0]).toBe(file))
+  }
+
+  const submitbtn = await screen.findByText('Submit Task')
+  userEvent.click(submitbtn)
+
+  await waitFor(() => {
+  expect(screen.getByText(title)).toBeInTheDocument();
+  expect(screen.getByText(desc)).toBeInTheDocument();
+  expect(screen.getByText(priority)).toBeInTheDocument();
+  expect(screen.getByText(deadline)).toBeInTheDocument();
+  expect(screen.getByText(tag)).toBeInTheDocument();
+  });
+  
+  if(img){
+    await waitFor(()=>expect(screen.findByRole('img')).toBeInTheDocument());
+  }
+  
+}
+
+ test("Dashboard should show correct info attributes", async () => {
   const texts = [
     /Total Tasks/i,
     /High Priority Tasks/i,
@@ -127,29 +192,29 @@ test.skip("Dashboard should show correct info attributes", async () => {
   }
 });
 
-test.skip("Task Graph is loading correctly",async () => {
+ test("Task Graph is loading correctly",async () => {
   await renderer(MemoryRouter, NotificationProvider, Dashboard)
   VisibilityCheck("taskGraph");
 })
 
-test.skip("Navbar is loading", async ()=>{
+ test("Navbar is loading", async ()=>{
   await renderer(MemoryRouter, NotificationProvider, Navbar);
   VisibilityCheck("navbar");
 })
 
-test.skip("TopNavbar is loading", async ()=>{
+ test("TopNavbar is loading", async ()=>{
   await renderer(MemoryRouter, NotificationProvider, Topnavbar);
   VisibilityCheck("topnav");
 })
 
-test.skip("Check todos functionality", async ()=>{
+ test("Check todos functionality", async ()=>{
   await renderer(MemoryRouter, NotificationProvider, Todos);
   for(let i=0; i<=5; i++){
     addtask("testing with jest"+i); 
   }
 })
 
-test.skip("Check todos validation - spaces", async ()=>{
+ test("Check todos validation - spaces", async ()=>{
   await renderer(MemoryRouter, NotificationProvider, Todos);
   const input = screen.getByRole('textbox');
   fireEvent.change(input, {target :{value : "    "}})
@@ -158,7 +223,7 @@ test.skip("Check todos validation - spaces", async ()=>{
   //shouldnt allow only spaces 
 })
 
-test.skip("Check todos validation - length", async ()=>{
+ test("Check todos validation - length", async ()=>{
   renderer(MemoryRouter, NotificationProvider, Todo);
   const input = await screen.findByRole('textbox');
   fireEvent.change(input, {target : {value : "one"}});
@@ -166,7 +231,7 @@ test.skip("Check todos validation - length", async ()=>{
   expect(savebtn).toBeDisabled();
 })
 
-test.skip("Check todos Functionality - Edit", async ()=>{
+ test("Check todos Functionality - Edit", async ()=>{
   
   await addtaskLS("editing"); 
 
@@ -186,7 +251,7 @@ test.skip("Check todos Functionality - Edit", async ()=>{
 
 })
 
-test.skip("Check todos Functionality - Deletion", async ()=>{
+ test("Check todos Functionality - Deletion", async ()=>{
   await addtaskLS("deletion test"); 
 
   const delbtn = await screen.findByTestId('Delete');
@@ -196,9 +261,24 @@ test.skip("Check todos Functionality - Deletion", async ()=>{
   await expect(addedtask).not.toBeInTheDocument();
 })
 
-// ls del replicant bug
+ test('Check Todos Functionality - Re-adding deleted task', async () => {
+  
+  addtaskLS("Bug check");
+  const addedtask = await screen.findByText("Bug check");
+  const delbtn = await screen.findByTestId('Delete');
 
-test.skip("Check todos Functionality - Show Finished Tasks", async ()=>{ //sus
+  //delete tasks
+  await userEvent.click(delbtn);
+  await expect(addedtask).not.toBeInTheDocument();
+
+  //re enter task with same name n check if its added
+  addtaskLS("Bug check");
+  await expect(addedtask).toBeInTheDocument();
+
+
+})
+
+ test("Check todos Functionality - Show Finished Tasks", async ()=>{ //sus
 
   //by default show finished test checked
   await addtaskLS("show finished test");
@@ -217,7 +297,7 @@ test.skip("Check todos Functionality - Show Finished Tasks", async ()=>{ //sus
 
 })
 
-test.skip("Check Review Tasks - Tasks are being added", async ()=>{
+ test("Check Review Tasks - Tasks are being added", async ()=>{
   await renderer(MemoryRouter, NotificationProvider, Todos);
   addtask("Checking Review");
   await renderer(MemoryRouter, NotificationProvider, Review);
@@ -226,10 +306,7 @@ test.skip("Check Review Tasks - Tasks are being added", async ()=>{
 
 })
 
-//date shouldnt be before current year check for bug bozo
-//bozo dont forget to mock if the component has apis n stuff, idiot
-
-test.skip("Check Review Tasks - Setting DropDowns", async ()=>{
+ test("Check Review Tasks - Setting DropDowns", async ()=>{
 
   await renderer(MemoryRouter, NotificationProvider, Review);
   TableSelector(0, "Low");
@@ -254,7 +331,7 @@ test.skip("Check Review Tasks - Setting DropDowns", async ()=>{
 //first mock then render
 
 
-test.skip("Check Review Tasks - Deletion Test", async ()=>{
+ test("Check Review Tasks - Deletion Test", async ()=>{
 
   axios.get.mockResolvedValue({
     data : [
@@ -291,7 +368,12 @@ test.skip("Check Review Tasks - Deletion Test", async ()=>{
 })
 
 
-test("Check Review Tasks - Date Validation Test", async ()=>{
+ test("Check Review Tasks - Date Validation Test", async ()=>{
+
+  const currentdate = new Date();
+  const prevdate = new Date(currentdate);
+  prevdate.setMinutes(prevdate.getMinutes() - prevdate.getTimezoneOffset());
+  const formatteddate = prevdate.toLocaleDateString('en-CA'); 
 
   axios.get.mockResolvedValue({
     data : [
@@ -301,7 +383,7 @@ test("Check Review Tasks - Date Validation Test", async ()=>{
         priority : "Medium",
         organization : "Personal",
         category : "Entertainment",
-        duedate : "2025-02-05",
+        duedate : formatteddate,
         status : "Ongoing",
       }
     ]
@@ -312,19 +394,138 @@ test("Check Review Tasks - Date Validation Test", async ()=>{
   const task = screen.getByText('Mock');
   expect(task).toBeInTheDocument();
 
-
   const row = screen.getAllByRole('row')[1];
   const cells = within(row).getAllByRole('cell');
   const date = within(cells[4]).getByTestId('due-date-input');
 
-  const currentdate = new Date();
-  const prevdate = new Date(currentdate);
-  prevdate.setDate(currentdate.getDate()-1);
-  const formatteddate = prevdate.toISOString().split('T')[0];
-
-  await userEvent.type(date, formatteddate); // Set the new date
-
-  // Assert the value of the date input field
-  await waitFor(() => expect(date).toHaveValue(formatteddate));
+  //use await with waitfor since its async
+  await waitFor(() => {
+    expect(date).not.toHaveValue(formatteddate); 
+    //error message should prevent date from being set to previous 
+    //already passed date
+  });
 
 })
+
+
+ test('Tasks count is correctly reflected on dashboard', async () => {
+
+  axios.get.mockResolvedValueOnce({
+    data: [
+      {
+        _id: '1',
+        todo: 'Mock Task test one',
+        priority: 'High',
+        organization: 'Personal',
+        category: 'Work',
+        duedate: '2025-02-05',
+        status: 'Ongoing',
+      },
+    ],
+  });
+
+  await renderer(MemoryRouter, NotificationProvider, Dashboard)
+
+  const taskHeading = await screen.findByTestId('totaltasks');
+  const taskCount = await within(taskHeading).findByRole('paragraph');
+
+  console.log(taskCount.textContent);
+  expect(taskCount.textContent).toBe('1'); 
+  
+});
+
+ test('Kanban Board Test - Adding tasks', async()=>{
+  
+  renderer(MemoryRouter, NotificationProvider, Kanban)
+  for(let i =0 ; i<=4 ; i++){
+  addtask_kanbanboard(i, "Fix Bug", "Resolve login issue", "High", "20", "Bug");
+  }
+  
+})
+
+ test('Kanban Board Test - Adding task with image', async()=>{
+  
+  renderer(MemoryRouter, NotificationProvider, Kanban)
+  const testImageFile = new File(['dummy content'], 'test-image.png', { type: 'image/png' });
+  addtask_kanbanboard(0, "Fix Bug", "Resolve login issue", "High", "20", "Bug", testImageFile);
+})
+
+ test('Kanban Board Test - Save tasks', async()=>{
+  renderer(MemoryRouter, NotificationProvider, Kanban)
+  addtask_kanbanboard(1, "Fix Bug", "Resolve login issue", "High", "20", "Bug");
+  const savebtn = await screen.findByText('Save Tasks')
+  userEvent.click(savebtn);
+
+  const savedinfo = ["Fix Bug", "Resolve login issue", "Bug"]
+  for(let i =0 ; i<savedinfo.length ; i++){
+    await waitFor(()=>expect(screen.getByText(savedinfo[i])).toBeInTheDocument())
+  }
+
+  //Simulated Reload to make sure info is retained
+  renderer(MemoryRouter, NotificationProvider, Kanban)
+  for(let i =0 ; i<savedinfo.length ; i++){
+    await waitFor(()=>expect(screen.getByText(savedinfo[i])).toBeInTheDocument())
+  }
+
+})
+
+ test('Kanban Board Test - Remove tasks', async()=>{
+  renderer(MemoryRouter, NotificationProvider, Kanban)
+  addtask_kanbanboard(1, "Fix Bug", "Resolve login issue", "High", "20", "Bug");
+  const delbtn = await screen.findAllByTestId('delbtn');
+  delbtn.forEach(async (btn) => await userEvent.click(btn)); 
+
+  const savedinfo = ["Fix Bug", "Resolve login issue", "Bug"]
+  for(let i =0 ; i<savedinfo.length ; i++){
+    await waitFor(()=>expect(screen.queryByText(savedinfo[i])).toBeNull())
+  }
+
+  //Simulated Reload to make sure info is removed
+  renderer(MemoryRouter, NotificationProvider, Kanban)
+  for(let i =0 ; i<savedinfo.length ; i++){
+    await waitFor(()=>expect(screen.queryByText(savedinfo[i])).toBeNull())
+  }
+})
+
+ test('Kanban Board Test - Add task validation', async()=>{
+  
+  renderer(MemoryRouter, NotificationProvider, Kanban)
+
+  const columnaddbtn = screen.getAllByText('Add Task')[0]
+  await userEvent.click(columnaddbtn);
+
+  const titleinput = await screen.findByPlaceholderText('Title');
+  fireEvent.change(titleinput, {target : {value : '  '}})
+
+  const descinput = await screen.findByPlaceholderText('Description');
+  fireEvent.change(descinput, {target : {value : '  '}})
+
+  const prioritycombox = await screen.findByRole('combobox');
+  const priorityoption = await screen.findByRole('option', {name : 'Priority'});
+  userEvent.selectOptions(prioritycombox, priorityoption)
+
+  const time = await screen.findByDisplayValue('0')
+  fireEvent.change(time, {target : {value : '-8'}});
+
+  const taginput = await screen.findByPlaceholderText('Tag Title');
+  fireEvent.change(taginput, {target : {value : '  '}})
+  const addtagbtn = await screen.findByText('Add Tag')
+  userEvent.click(addtagbtn);
+
+  const submitbtn = await screen.findByText('Submit Task')
+  userEvent.click(submitbtn)
+
+  addtask_kanbanboard(0, "  ", " ", "  ", "  ", "  ");  
+
+  await waitFor(() => {
+    expect(screen.queryByText("  ")).not.toBeInTheDocument();
+    expect(screen.queryByText(" ")).not.toBeInTheDocument();
+    expect(screen.queryByText("-8")).not.toBeInTheDocument();
+
+  });
+
+})
+
+
+
+

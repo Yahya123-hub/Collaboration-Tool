@@ -5,7 +5,7 @@ import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 
 const MonitorAndChart = () => {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user || { email: "placeholder@example.com" });
   const [assignments, setAssignments] = useState([]);
   const [error, setError] = useState('');
 

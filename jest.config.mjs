@@ -204,7 +204,8 @@ const config = {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
   moduleNameMapper: {
-    '\\.css$': 'identity-obj-proxy', "\\.(jpg|jpeg|png|gif|webp|svg)$": "<rootDir>/mocks/fileMock.js"
+    '\\.css$': 'identity-obj-proxy', "\\.(jpg|jpeg|png|gif|webp|svg)$": "<rootDir>/mocks/fileMock.js",
+    'react-chartjs-2': '<rootDir>/mocks/react-chartjs-2.js',
   },
   transformIgnorePatterns: [
     'node_modules/(?!(your-package-name)/)',

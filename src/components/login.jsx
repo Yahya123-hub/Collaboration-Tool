@@ -1,4 +1,3 @@
-import ReCAPTCHA from "react-google-recaptcha";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
@@ -17,7 +16,6 @@ const Login = () => {
   const [errorMessageVisible, setErrorMessageVisible] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [verified, setVerified] = useState(false);
   const nav=useHistory();
 
   const handleChange = ({ currentTarget: input }) => {
@@ -28,7 +26,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const url = "http://localhost:3001/api/login";
-      const { data: res } = await axios.post(url, { ...data, recaptchaToken: verified });
+      const { data: res } = await axios.post(url, { ...data }); //, recaptchaToken: verified
       if (rememberMe) {
         localStorage.setItem("token", res.data);
         localStorage.setItem("email", data.email);
@@ -139,20 +137,11 @@ const Login = () => {
                 {error}
               </div>
             )}
-            <div className="mb-5 w-full rounded-lg overflow-hidden ">
-              <ReCAPTCHA
-                sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-                onChange={(token) => setVerified(token)}
-                className="w-full"
-                theme="dark"
-              />
-            </div>
+
 
             <button 
               type="submit"
               className="bg-gradient-to-r from-blue-400 to-blue-600 w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
-              disabled={!verified}
-              title={!verified ? "Please verify reCAPTCHA" : ""}
             >
               Login
             </button>

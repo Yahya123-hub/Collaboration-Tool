@@ -3,6 +3,7 @@ import axios from 'axios';
 import html2canvas from 'html2canvas'; // Import html2canvas for capturing DOM elements
 import jsPDF from 'jspdf'; // Import jspdf for PDF generation
 import { useUserContext } from './usercontext'; 
+import toast from "react-hot-toast";
 
 
 
@@ -66,6 +67,7 @@ const Review = () => {
         pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight); // Add image to PDF
         pdf.save('tasks.pdf'); // Save PDF
       });
+      toast.success("Exported")
   };
 
   return (
@@ -118,7 +120,7 @@ const Review = () => {
                     </select>
                   </td>
                   <td className="border p-2 text-black">
-                    <input type="date" value={task.dueDate ? task.dueDate.substring(0, 10) : todayDate} onChange={(e) => handleDateChange(e, task._id)} className="bg-white text-black border rounded-md p-2"/>
+                    <input type="date" data-testid="due-date-input" value={task.dueDate ? task.dueDate.substring(0, 10) : todayDate} onChange={(e) => handleDateChange(e, task._id)} className="bg-white text-black border rounded-md p-2"/>
                   </td>
                   <td className="border p-2 text-black">
                     <select name="status" value={task.status || 'Ongoing'} onChange={(e) => handleSelectChange(e, task._id)} className="bg-white text-black border rounded-md p-2">

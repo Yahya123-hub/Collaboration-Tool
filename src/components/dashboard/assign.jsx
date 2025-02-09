@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 
 const GroupTasks = () => {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user || { email: "placeholder@example.com" });
   const [groups, setGroups] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [assignments, setAssignments] = useState([]);

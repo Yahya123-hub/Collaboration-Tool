@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 const socket = io.connect("http://localhost:3001");
 
 const Chatroom = () => {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user || { email: "placeholder@example.com" });
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
   const [showChat, setShowChat] = useState(false);
@@ -58,8 +58,10 @@ const Chatroom = () => {
           <input
             className="w-52 h-10 mb-2 border-2 border-blue-600 rounded px-2 text-white"
             type="text"
-            value={username}
-            readOnly
+            onChange={(event) => {
+              setUsername(event.target.value);
+            }}
+            
           />
           <input
             className="w-52 h-10 mb-2 border-2 border-blue-600 rounded px-2 text-white"

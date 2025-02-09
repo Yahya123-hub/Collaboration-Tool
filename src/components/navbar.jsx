@@ -22,7 +22,7 @@ const Navbar = () => {
   }, [email, history]);
 
   return (
-    <nav className="sticky top-0 z-50 py-3 backdrop-blur-lg border-b border-white-700/80 bg-dark text-white">
+    <nav className="sticky top-0 z-50 py-3 backdrop-blur-lg border-b border-white-700/80 bg-dark text-white"  data-testid="topnav">
       <div className="container px-4 mx-auto relative lg:text-sm">
         <div className="flex justify-between items-center">
           <div className="flex items-center flex-shrink-0">

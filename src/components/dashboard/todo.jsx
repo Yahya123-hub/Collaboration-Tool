@@ -120,7 +120,7 @@ const Todo = () => {
           <button onClick={handleAdd} disabled={todo.length <= 3} className='bg-white mx-2 rounded-full hover:bg-white disabled:bg-gray-400 p-4 py-2 text-sm font-bold text-black'>Save</button>
         </div>
       </div>
-      <input className='my-4' id='show' onChange={toggleFinished} type="checkbox" checked={showFinished} />
+      <input className='my-4' id='show' data-testid="showfinished" onChange={toggleFinished} type="checkbox" checked={showFinished} />
       <label className='mx-2' htmlFor="show">Show Finished</label>
       <div className='h-[1px] bg-black opacity-15 w-[90%] mx-auto my-2'></div>
       <h2 className='text-2xl font-bold'>Todos</h2>
@@ -128,14 +128,14 @@ const Todo = () => {
         {todos.length === 0 && <div className='m-5'>No Todos to display</div>}
         {todos.map(item => (
           (showFinished || !item.isCompleted) &&
-          <div key={item.id} className={"todo flex my-3 justify-between"}>
-            <div className='flex gap-5'>
-              <input name={item.id} onChange={(e) => handleCheckbox(e, item.id)} type="checkbox" checked={item.isCompleted} />
-              <div className={item.isCompleted ? "line-through" : ""}>{item.todo}</div>
+          <div key={item.id}  className={"todo flex my-3 justify-between"}>
+            <div className='flex gap-5' >
+              <input name={item.id}  onChange={(e) => handleCheckbox(e, item.id)} type="checkbox" checked={item.isCompleted} />
+              <div className={item.isCompleted ? "line-through" : ""}  date-testid="taskfinstatus">{item.todo}</div>
             </div>
             <div className="buttons flex h-full">
-              <button onClick={() => handleEdit(item.id)} className='bg-black hover:bg-gray-400 p-2 py-1 text-sm font-bold text-white rounded-md mx-1'><FaEdit /></button>
-              <button onClick={() => handleDelete(item.id)} className='bg-black hover:bg-gray-400 p-2 py-1 text-sm font-bold text-white rounded-md mx-1'><AiFillDelete /></button>
+              <button onClick={() => handleEdit(item.id)} data-testid="Edit" className='bg-black hover:bg-gray-400 p-2 py-1 text-sm font-bold text-white rounded-md mx-1'><FaEdit /></button>
+              <button onClick={() => handleDelete(item.id)} data-testid="Delete" className='bg-black hover:bg-gray-400 p-2 py-1 text-sm font-bold text-white rounded-md mx-1'><AiFillDelete /></button>
             </div>
           </div>
         ))}

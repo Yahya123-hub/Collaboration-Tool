@@ -124,7 +124,7 @@ function Navbar() {
         <span className={!isExpanded ? "hidden" : "block"}>Pro Manage</span>
       </div>
 
-      <div className="flex flex-col space-y-8 mt-12 overflow-y-auto">
+      <div className="flex flex-col space-y-8 mt-12 overflow-y-auto" data-testid="navbar">
         {navLinks.map((item, index) => (
           <div className="nav-links w-full" key={index}>
             <Link to={item.path}>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useNotifications } from './notificationcontext';
 import { useUserContext } from './usercontext'; 
 import "../../styles.css";
+import * as React from "react";
 
 let timers = [];
 
@@ -158,18 +159,18 @@ const Dashboard = () => {
       )}
 
       <div className="md:flex md:space-x-8 py-6 ">
-        <div className="flex flex-col rounded-md border md:w-[400px] w-[250px] h-[150px] md:p-8 p-4 justify-center">
+        <div data-testid="totaltasks" className="flex flex-col rounded-md border md:w-[400px] w-[250px] h-[150px] md:p-8 p-4 justify-center">
           <h2>Total Tasks</h2>
           <p className="text-gray-500 mt-3">{totalTasks}</p>
         </div>
-        <div className="flex flex-col rounded-md border md:w-[400px] w-[250px] h-[150px] md:p-8 p-4 justify-center md:mt-0 mt-4">
+        <div data-testid="hptasks" className="flex flex-col rounded-md border md:w-[400px] w-[250px] h-[150px] md:p-8 p-4 justify-center md:mt-0 mt-4">
           <h2>High Priority Tasks</h2>
           <p className="text-gray-500 mt-3">{highPriorityTasks}</p>
         </div>
       </div>
       
       <div className="flex space-x-8 py-6 w-4/5">
-        <div id="taskGraph" className="flex flex-col rounded-md border w-full p-8 justify-center">
+        <div id="taskGraph" data-testid="taskGraph" className="flex flex-col rounded-md border w-full p-8 justify-center">
           Tasks Graph
           <ChartComponent
             data={chartData}
@@ -180,11 +181,11 @@ const Dashboard = () => {
       </div>
 
       <div className="md:flex md:space-x-8 py-6">
-        <div className="flex flex-col rounded-md border  md:w-[400px] w-[250px] h-[200px] md:p-8 p-4 justify-center">
+        <div data-testid="ptasks" className="flex flex-col rounded-md border  md:w-[400px] w-[250px] h-[200px] md:p-8 p-4 justify-center">
           <h2>Personal Tasks</h2>
           <p className="text-gray-500 mt-3">{personalTasks}</p>
         </div>
-        <div className="flex flex-col rounded-md border md:w-[400px] w-[250px] h-[200px] md:p-8 p-4 justify-center md:mt-0 mt-4">
+        <div data-testid="wtasks" className="flex flex-col rounded-md border md:w-[400px] w-[250px] h-[200px] md:p-8 p-4 justify-center md:mt-0 mt-4">
           <h2>Work Tasks</h2>
           <p className="text-gray-500 mt-3">{worktasks}</p>
         </div>

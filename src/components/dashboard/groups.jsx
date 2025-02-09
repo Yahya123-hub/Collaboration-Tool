@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 
 const GroupComponent = () => {
-  const user = useSelector((state) => state.user); // Assuming Redux state contains user info
+  const user = useSelector((state) => state.user || { email: "placeholder@example.com" });
   const [groups, setGroups] = useState([]);
   const [error, setError] = useState('');
 

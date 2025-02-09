@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 
 const AssignedTasks = () => {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user || { email: "placeholder@example.com" });
   const [assignments, setAssignments] = useState([]);
   const [error, setError] = useState('');
 

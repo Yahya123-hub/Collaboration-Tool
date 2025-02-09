@@ -16,20 +16,20 @@ router.post("/", async (req, res) => {
       return res.status(400).send({ message: error.details[0].message });
     }
 
-    const { email, password, recaptchaToken } = req.body;
+    const { email, password } = req.body;
 
-    if (!recaptchaToken) {
-      return res.status(400).send({ message: "reCAPTCHA token is missing" });
-    }
+    //if (!recaptchaToken) {
+    //  return res.status(400).send({ message: "reCAPTCHA token is missing" });
+    //}
 
     // Verify the reCAPTCHA token
-    const recaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY;
+    /*const recaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY;
     const recaptchaVerificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecretKey}&response=${recaptchaToken}`;
 
     const recaptchaResponse = await axios.post(recaptchaVerificationUrl);
     if (!recaptchaResponse.data.success) {
       return res.status(400).send({ message: "reCAPTCHA verification failed" });
-    }
+    }*/
 
     const user = await User.findOne({ email });
     if (!user) {
@@ -52,7 +52,6 @@ const validate = (data) => {
   const schema = Joi.object({
     email: Joi.string().email().required().label("Email"),
     password: Joi.string().required().label("Password"),
-    recaptchaToken: Joi.string().required().label("reCAPTCHA Token"),
   });
   return schema.validate(data);
 };

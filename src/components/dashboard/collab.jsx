@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 
 const CollaboratorForm = () => {
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user || { email: "placeholder@example.com" });
   const [email, setEmail] = useState('');
   const [groups, setGroups] = useState([]);
   const [error, setError] = useState('');

@@ -36,8 +36,8 @@ const Home = () => {
   const fetchTasks = async () => {
     try {
       const response = await axios.get(`http://localhost:3001/api/kanban/fetch-tasks/${email}`);
-      const { backlogTasks, pendingTasks, todoTasks, doingTasks, doneTasks } = response.data;
-
+      const { backlogTasks = [], pendingTasks = [], todoTasks = [], doingTasks = [], doneTasks = [] } = response.data;
+  
       setColumns({
         backlog: { name: 'Backlog', items: backlogTasks },
         pending: { name: 'Pending', items: pendingTasks },
@@ -47,6 +47,14 @@ const Home = () => {
       });
     } catch (error) {
       console.error('Error fetching tasks:', error);
+      // Keep columns initialized even if API fails
+      setColumns({
+        backlog: { name: 'Backlog', items: [] },
+        pending: { name: 'Pending', items: [] },
+        todo: { name: 'To Do', items: [] },
+        doing: { name: 'Doing', items: [] },
+        done: { name: 'Done', items: [] },
+      });
     }
   };
 
@@ -128,7 +136,7 @@ const Home = () => {
   };
 
   const areAllColumnsEmpty = () => {
-    return Object.values(columns).every(column => column.items.length === 0);
+    return columns && Object.values(columns).every(column => column.items.length === 0);
   };
 
 
@@ -166,7 +174,7 @@ const Home = () => {
                             <div className="relative">
                               <Task provided={provided} task={task} />
                               {/* Delete button for each task */}
-                              <button
+                              <button data-testid = "delbtn"
                                 className="absolute top-0 right-0 mt-1 mr-1 p-1 rounded-full bg-red-500 text-white shadow-md hover:bg-red-600"
                                 onClick={() => handleDeleteTask(columnId, task.id)}
                               >
