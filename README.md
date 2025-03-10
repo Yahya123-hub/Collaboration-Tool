@@ -41,11 +41,7 @@ Authentication: JWT & reCAPTCHA
 Real-Time Communication: Socket.io
 
 📦 Installation & Setup
-
-Clone the repository
-
-git clone https://github.com/your-username/repo-name.git
-
+Clone the Repo
 Install dependencies
 npm install
 Run the Development server
