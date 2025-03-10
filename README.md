@@ -1,27 +1,56 @@
-# React + Vite
+🚀 Task Management & Collaboration App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A powerful and intuitive task management web application designed for teams and individuals to organize, track, and collaborate on projects efficiently.
 
-Currently, two official plugins are available:
+🌟 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Linked with Landing Page: Seamless integration with the main website.
+User Authentication: Secure sign-in/sign-up with JWT and reCAPTCHA token-based login.
+Password Management: Reset password via email and "Remember Me" functionality.
+Dashboard with Real-Time Analytics: Fetch live insights via API.
+Task Management: Add, edit, mark, and delete tasks, storing them in the database.
+Task Review & Attributes: Categorize tasks based on specific attributes.
+Graph-Based Visualization: View tasks visually with data-driven graphs.
+Kanban Board: Drag-and-drop task management like Trello.
+Kanban Alert System: Automatic alerts for approaching deadlines.
+Export Functionality: Export Review Table, Graphs, and Kanban Board to PDF.
+Group Email Invitations: Invite team members effortlessly.
+Real-Time Chat: Communicate live using Socket.io.
+Task Assignment: Assign tasks to other users within a group.
+Member Progress Monitoring: Track team members' task progress.
 
-Features:
--Linked with Landing Page
--Sign in/Sign up
--JWT and recaptcha token based login auth -Reset password through email and remember me
--Dashboard Real Time Analytics through api
--Add, Edit, mark and delete tasks on todo list then store on db
--Review stored tasks and set attributes
--Visualize tasks based on attributes with graphs
--Kanban Board like trello with drag and drop capabilities
--Kanban Alert System based on set deadlines on the board
--Export Review table, Graphs & Kanban Board to PDF
--Group Email Invitations
--Real Time User chatting with Socket Io 
--Assign Tasks to other users in group
--Monitor fellow members progress
+🛠️ Tech Stack
+
+Frontend: [Vite]
+Backend: [Node.js, Express]
+Database: [MongoDB]
+Authentication: JWT & reCAPTCHA
+Real-Time Communication: Socket.io
+
+📦 Installation & Setup
+
+Clone the repository
+
+git clone https://github.com/your-username/repo-name.git
+
+Install dependencies
+npm install
+Run the Development server
+npm start
+Backend Setup 
+cd server
+node server
+
+Access the app
+Open http://localhost:3000 in your browser
+
+🤝 Contributing
+Feel free to submit issues or pull requests to improve the project!
+
+📜 License
+This project is licensed under the MIT License.
+
+⭐ If you like this project, give it a star on GitHub!
 
 Screenshots : 
 
