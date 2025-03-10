@@ -5,18 +5,31 @@ A powerful and intuitive task management web application designed for teams and 
 🌟 Features
 
 Linked with Landing Page: Seamless integration with the main website.
+
 User Authentication: Secure sign-in/sign-up with JWT and reCAPTCHA token-based login.
+
 Password Management: Reset password via email and "Remember Me" functionality.
+
 Dashboard with Real-Time Analytics: Fetch live insights via API.
+
 Task Management: Add, edit, mark, and delete tasks, storing them in the database.
+
 Task Review & Attributes: Categorize tasks based on specific attributes.
+
 Graph-Based Visualization: View tasks visually with data-driven graphs.
+
 Kanban Board: Drag-and-drop task management like Trello.
+
 Kanban Alert System: Automatic alerts for approaching deadlines.
+
 Export Functionality: Export Review Table, Graphs, and Kanban Board to PDF.
+
 Group Email Invitations: Invite team members effortlessly.
+
 Real-Time Chat: Communicate live using Socket.io.
+
 Task Assignment: Assign tasks to other users within a group.
+
 Member Progress Monitoring: Track team members' task progress.
 
 🛠️ Tech Stack
